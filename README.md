@@ -4,7 +4,7 @@ CSC207 Fall 2026 team project. This Java Swing desktop application helps players
 
 ## Current status
 
-The shared entities, use case boundaries and three Swing tabs are ready. Action buttons are disabled until each lead wires their use case. The Java API client, JSON adapters, interactors, controllers, presenters and feature tests are team implementation work. The browser prototype was a design reference.
+The Catalog tab has an offline Lab 8 demo for UC1. Search for `dark magician`, select a result and inspect its details. Search for `xyz` to see the no-match state. The demo searches three bundled sample cards. The live API client, card images, Collection and Deck features remain pending.
 
 ## Build and launch
 
