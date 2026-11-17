@@ -17,6 +17,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import java.awt.BorderLayout;
 import java.util.OptionalInt;
 
@@ -60,22 +62,65 @@ public final class CatalogPanel extends JPanel implements SearchOutputBoundary {
         add(status, BorderLayout.SOUTH);
     }
 
-    public void connectSearch(SearchInputBoundary input) {
-        search.addActionListener(event -> input.execute(new SearchRequest(query.getText())));
+    public void connectSearch(SearchInputBoundary input, boolean background) {
+        search.addActionListener(event -> {
+            SearchRequest request = new SearchRequest(query.getText());
+            if (!background) {
+                input.execute(request);
+                return;
+            }
+
+            search.setEnabled(false);
+            status.setText("Searching YGOPRODeck…");
+            new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() {
+                    input.execute(request);
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    try {
+                        get();
+                    } catch (InterruptedException exception) {
+                        Thread.currentThread().interrupt();
+                        presentError("Card search was interrupted.");
+                    } catch (java.util.concurrent.ExecutionException exception) {
+                        presentError("Could not complete the card search.");
+                    } finally {
+                        search.setEnabled(true);
+                    }
+                }
+            }.execute();
+        });
         query.addActionListener(event -> search.doClick());
     }
 
     @Override
     public void present(SearchResult result) {
-        cards.clear();
-        result.cards().forEach(cards::addElement);
-        status.setText(cards.isEmpty() ? "No matching cards." : cards.size() + " match(es). Select a card.");
+        onEdt(() -> {
+            cards.clear();
+            result.cards().forEach(cards::addElement);
+            status.setText(cards.isEmpty() ? "No matching cards."
+                    : cards.size() + " match(es). Select a card.");
+        });
     }
 
     @Override
     public void presentError(String message) {
-        cards.clear();
-        status.setText(message);
+        onEdt(() -> {
+            cards.clear();
+            status.setText(message);
+        });
+    }
+
+    private static void onEdt(Runnable update) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            update.run();
+        } else {
+            SwingUtilities.invokeLater(update);
+        }
     }
 
     private static String cardDetails(Card card) {
