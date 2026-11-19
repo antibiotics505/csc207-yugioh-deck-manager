@@ -4,7 +4,7 @@ CSC207 Fall 2026 team project. This Java Swing desktop application helps players
 
 ## Current status
 
-The Catalog tab searches YGOPRODeck by card name and shows details when you select a result. Try `dark magician` or `NoSuchCatalogCard928315`. To use three bundled sample cards without a network connection, append `--offline-demo` to the launch command. Card images, cache persistence, Collection and Deck features remain pending.
+The Catalog tab searches YGOPRODeck by card name and shows details when you select a result. Try `dark magician` or `NoSuchCatalogCard928315`. Card images, cache persistence, Collection and Deck features remain pending.
 
 ## Build and launch
 
@@ -85,7 +85,7 @@ For DeckResult, LIST sends the saved map and leaves the draft unchanged. OPEN, C
 
 The catalog calls `GET https://db.ygoprodeck.com/api/v7/cardinfo.php` with an encoded `fname`, `num=25` and `offset=0`. Parse `id`, `name`, `type` and `desc`, and keep missing combat stats optional. Metadata caching and local thumbnails are planned.
 
-A confirmed no-match shows an empty result. Network and API errors display an error message. The offline demo is selected explicitly at startup.
+A confirmed no-match shows an empty result. Network and API errors display an error message.
 
 ## Persistence
 

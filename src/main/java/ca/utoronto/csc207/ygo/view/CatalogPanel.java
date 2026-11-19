@@ -62,14 +62,9 @@ public final class CatalogPanel extends JPanel implements SearchOutputBoundary {
         add(status, BorderLayout.SOUTH);
     }
 
-    public void connectSearch(SearchInputBoundary input, boolean background) {
+    public void connectSearch(SearchInputBoundary input) {
         search.addActionListener(event -> {
             SearchRequest request = new SearchRequest(query.getText());
-            if (!background) {
-                input.execute(request);
-                return;
-            }
-
             search.setEnabled(false);
             status.setText("Searching YGOPRODeck…");
             new SwingWorker<Void, Void>() {
