@@ -1,5 +1,7 @@
 package ca.utoronto.csc207.ygo.app;
 
+import ca.utoronto.csc207.ygo.data_access.YgoProDeckCatalog;
+import ca.utoronto.csc207.ygo.use_case.search.SearchInteractor;
 import ca.utoronto.csc207.ygo.interface_adapter.SelectedCardModel;
 import ca.utoronto.csc207.ygo.view.CatalogPanel;
 import ca.utoronto.csc207.ygo.view.CollectionPanel;
@@ -29,7 +31,9 @@ public final class Main {
         SelectedCardModel selection = new SelectedCardModel();
         JTabbedPane tabs = new JTabbedPane();
         tabs.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-        tabs.addTab("Catalog", new CatalogPanel());
+        CatalogPanel catalog = new CatalogPanel(selection);
+        catalog.connectSearch(new SearchInteractor(new YgoProDeckCatalog(), catalog));
+        tabs.addTab("Catalog", catalog);
         tabs.addTab("Collection", new CollectionPanel(selection));
         tabs.addTab("Decks", new DeckPanel(selection));
         return tabs;
