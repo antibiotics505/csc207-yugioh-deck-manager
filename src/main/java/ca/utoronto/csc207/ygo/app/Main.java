@@ -11,9 +11,15 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import java.awt.Dimension;
+import ca.utoronto.csc207.ygo.data_access.DeckStore;
+import ca.utoronto.csc207.ygo.interface_adapter.DeckController;
+import ca.utoronto.csc207.ygo.interface_adapter.DeckPresenter;
+import ca.utoronto.csc207.ygo.interface_adapter.DeckViewModel;
+import ca.utoronto.csc207.ygo.use_case.deck.DeckInteractor;
 
 public final class Main {
-    private Main() {}
+    private Main() {
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -29,13 +35,28 @@ public final class Main {
 
     static JTabbedPane createTabs() {
         SelectedCardModel selection = new SelectedCardModel();
+
+        DeckViewModel deckViewModel = new DeckViewModel();
+        DeckPresenter deckPresenter = new DeckPresenter(deckViewModel);
+
+        // 这里先用内存实现：程序关闭后卡组不会保存。
+        // 如果 data_access.DeckStore 需要文件路径，请按它的构造函数修改这一行。
+        DeckStore deckStore = new DeckStore();
+
+        DeckInteractor deckInteractor =
+                new DeckInteractor(deckStore, deckPresenter);
+        DeckController deckController =
+                new DeckController(deckInteractor);
+
         JTabbedPane tabs = new JTabbedPane();
         tabs.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         CatalogPanel catalog = new CatalogPanel(selection);
         catalog.connectSearch(new SearchInteractor(new YgoProDeckCatalog(), catalog));
         tabs.addTab("Catalog", catalog);
         tabs.addTab("Collection", new CollectionPanel(selection));
-        tabs.addTab("Decks", new DeckPanel(selection));
+        tabs.addTab("Decks",
+                new DeckPanel(selection, deckViewModel, deckController));
+
         return tabs;
     }
 }
