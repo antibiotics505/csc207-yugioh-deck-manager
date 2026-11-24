@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import java.awt.Dimension;
-import ca.utoronto.csc207.ygo.data_access.DeckStore;
+import ca.utoronto.csc207.ygo.data_access.JsonDeckStore;
 import ca.utoronto.csc207.ygo.interface_adapter.DeckController;
 import ca.utoronto.csc207.ygo.interface_adapter.DeckPresenter;
 import ca.utoronto.csc207.ygo.interface_adapter.DeckViewModel;
@@ -37,9 +37,8 @@ public final class Main {
         DeckViewModel deckViewModel = new DeckViewModel();
         DeckPresenter deckPresenter = new DeckPresenter(deckViewModel);
 
-        // 这里先用内存实现：程序关闭后卡组不会保存。
-        // 如果 data_access.DeckStore 需要文件路径，请按它的构造函数修改这一行。
-        DeckStore deckStore = new DeckStore();
+        ca.utoronto.csc207.ygo.use_case.deck.DeckStore deckStore =
+                new JsonDeckStore();
 
         DeckInteractor deckInteractor =
                 new DeckInteractor(deckStore, deckPresenter);
