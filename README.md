@@ -4,7 +4,7 @@ CSC207 Fall 2026 team project. This Java Swing desktop application helps players
 
 ## Current status
 
-The shared entities, use case boundaries and three Swing tabs are ready. Action buttons are disabled until each lead wires their use case. The Java API client, JSON adapters, interactors, controllers, presenters and feature tests are team implementation work. The browser prototype was a design reference.
+The Catalog tab searches YGOPRODeck by card name and shows details when you select a result. Try `dark magician` or `NoSuchCatalogCard928315`. Card images, cache persistence, Collection and Deck features remain pending.
 
 ## Build and launch
 
@@ -83,9 +83,9 @@ For DeckResult, LIST sends the saved map and leaves the draft unchanged. OPEN, C
 
 [YGOPRODeck API v7 documentation](https://ygoprodeck.com/api-guide/)
 
-The catalog will call `GET https://db.ygoprodeck.com/api/v7/cardinfo.php` with an encoded `fname`, `num=25` and `offset=0`. Parse `id`, `name`, `type` and `desc`, and keep missing combat stats optional. Cache fetched metadata and use local thumbnails with a placeholder on failure. Avoid repeated image hotlinking.
+The catalog calls `GET https://db.ygoprodeck.com/api/v7/cardinfo.php` with an encoded `fname`, `num=25` and `offset=0`. Parse `id`, `name`, `type` and `desc`, and keep missing combat stats optional. Metadata caching and local thumbnails are planned.
 
-**Call status.** A public Dark Magician response was checked during project planning on November 10, 2026. The team's Java adapter and Java smoke call are pending. Confirm the provider's no-match response separately from invalid requests, timeouts and rate limiting.
+A confirmed no-match shows an empty result. Network and API errors display an error message.
 
 ## Persistence
 
